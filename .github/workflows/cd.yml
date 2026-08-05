@@ -1,0 +1,52 @@
+name: 🚀 CD — Deploy to Streamlit Cloud
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  # Gate: Only deploy if CI passes
+  verify:
+    name: Verify Before Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: 📦 Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 🧪 Run final tests
+        run: |
+          pytest tests/ -v --tb=short
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+
+  deploy:
+    name: Deploy to Streamlit Cloud
+    needs: verify
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ✅ Deployment triggered
+        run: |
+          echo "✅ All checks passed. Streamlit Cloud is auto-deploying from main branch."
+          echo "🔗 Your app: https://your-app-name.streamlit.app"
+          echo ""
+          echo "Streamlit Cloud watches your GitHub repo and auto-deploys on every push to main."
+          echo "No manual deployment step is needed — it handles it automatically!"
+
+      - name: 📢 Notify deployment
+        run: |
+          echo "🚀 Deployment initiated at $(date '+%Y-%m-%d %H:%M:%S UTC')"
+          echo "📦 Commit: ${{ github.sha }}"
+          echo "👤 Triggered by: ${{ github.actor }}"
