@@ -17,8 +17,7 @@ def render():
 
     st.markdown("### 📤 Upload Your Legal Document")
     st.markdown(
-        "Upload a PDF contract, NDA, lease, or any legal agreement to get an instant "
-        "AI-powered analysis."
+        "Upload a PDF document for AI analysis."
     )
 
     # ── File Upload ──────────────────────────────────────────────────────────
@@ -105,20 +104,99 @@ def _generate_analysis():
     text = st.session_state["doc_text"]
 
     with st.spinner("⚖️ LexAI is analyzing your document..."):
-        prompt = """Analyze this legal document and provide a comprehensive structured report with:
+        prompt = """
+        ...
+Formatting Rules:
+- Do NOT use Markdown headings (#, ##, ###).
+- Do NOT use **bold** or __bold__.
+- Use plain text section titles followed by a colon.
 
-1. **DOCUMENT TYPE**: What kind of legal document is this?
-2. **PARTIES INVOLVED**: List all parties (names, roles)
-3. **EFFECTIVE DATE & DURATION**: When does it start/end?
-4. **KEY OBLIGATIONS**: What must each party do?
-5. **PAYMENT TERMS**: Any financial obligations or compensation
-6. **TERMINATION CONDITIONS**: How can this agreement end?
-7. **INTELLECTUAL PROPERTY**: Any IP ownership clauses?
-8. **CONFIDENTIALITY**: NDA or confidentiality provisions
-9. **DISPUTE RESOLUTION**: How are disputes handled?
-10. **EXECUTIVE SUMMARY**: 3-4 sentence plain English summary
+Example:
 
-Format clearly with headers. Be thorough but concise."""
+DOCUMENT TYPE:
+Research Paper
+
+AUTHORS:
+John Doe
+Jane Doe
+
+KEY FINDINGS:
+• Finding 1
+• Finding 2
+
+EXECUTIVE SUMMARY:
+...
+
+
+You are LexAI, an expert legal and document analysis assistant.
+
+First identify the document type.
+
+Possible document types include:
+- Contract
+- Agreement
+- NDA
+- Lease
+- Employment Agreement
+- Court Judgment
+- Legal Notice
+- Government Policy
+- Research Paper
+- Report
+- Memorandum
+- Other
+
+Return a clean, structured report.
+
+Always include:
+1. DOCUMENT TYPE
+2. TITLE (if available)
+3. PARTIES / AUTHORS / ORGANIZATIONS (whichever is applicable)
+4. DATE / EFFECTIVE DATE / PUBLICATION DATE
+5. PURPOSE OF THE DOCUMENT
+
+Then provide ONLY the sections relevant to the identified document.
+
+For Contracts or Agreements:
+- Parties
+- Obligations
+- Payment Terms
+- Confidentiality
+- Intellectual Property
+- Termination
+- Governing Law
+- Dispute Resolution
+
+For Research Papers:
+- Authors
+- Institutions
+- Research Objective
+- Methodology
+- Key Findings (bullet points)
+- Recommendations / Policy Implications
+- Funding (if mentioned)
+
+For Court Judgments:
+- Court
+- Judge(s)
+- Parties
+- Facts
+- Issues
+- Decision
+- Reasoning
+
+Finish with:
+
+## Executive Summary
+
+Rules:
+- Never invent information.
+- Never create sections that are not applicable.
+- If a section does not exist, omit it entirely.
+- Do not write "Not mentioned", "None", or "No payment terms".
+- Use concise bullet points.
+- Keep the entire response under 700 words.
+"""
 
         analysis = analyze_document(llm, text, prompt)
         st.session_state["doc_analysis"] = analysis
@@ -128,21 +206,10 @@ def _render_analysis(analysis: str):
     """Render the analysis result in a styled container."""
     st.markdown("---")
     st.markdown("### 📊 Document Analysis")
-    st.markdown(
-        f"""
-        <div style="
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-left: 4px solid #d4a017;
-            border-radius: 8px;
-            padding: 1.5rem;
-            line-height: 1.8;
-        ">
-        {analysis.replace(chr(10), '<br>')}
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    st.markdown("### 📊 Document Analysis")
+
+    with st.container(border=True):
+        st.markdown(analysis)
 
     # Download button
     st.download_button(
