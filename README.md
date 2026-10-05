@@ -1,9 +1,5 @@
 # ⚖️ LexAI — AI-Powered Legal Document Analyzer
 
-[![CI Pipeline](https://github.com/yourusername/lexai/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/lexai/actions/workflows/ci.yml)
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://your-app-name.streamlit.app)
-[![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 > An AI-powered legal document analyzer built with **Streamlit**, **Groq API** (Llama 3.3 70B), and **LangChain RAG** — with a full CI/CD pipeline and Streamlit Cloud deployment.
 
